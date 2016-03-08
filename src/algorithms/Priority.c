@@ -6,6 +6,7 @@ runStats * PRIscheduler(Process ** queue, int length){
     int i, s = 1;
     Process * t;
 
+    //sort process according to algorithm spec
     while (s) {
 
         s = 0;
@@ -28,6 +29,7 @@ runStats * PRIscheduler(Process ** queue, int length){
 
     int toki = 0;
 
+    //run processes
     for(int i = 0; i < length; i++){
         averageWait += toki;
 
@@ -40,6 +42,7 @@ runStats * PRIscheduler(Process ** queue, int length){
         averageTurn += queue[i]->endTime;
     }
 
+    //Collect Statistics
     runStats * myStats = (runStats*)malloc(sizeof(runStats));
 
     myStats->averageWaittime       = averageWait/(float)length;
