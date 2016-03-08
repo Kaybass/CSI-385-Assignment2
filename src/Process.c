@@ -1,6 +1,6 @@
 #include "Process.h"
 
-
+//Generate processes for testing
 int generateProcesses(Process ** queue, int length){
 
     srand(time(NULL));
@@ -22,7 +22,7 @@ int generateProcesses(Process ** queue, int length){
     return 0;
 }
 
-int qCopy(Process ** queue, Process ** queue2, int length){
+int qCopy(Process ** queue, Process ** queue2, int length){ //copy existing queue
 
     for(int i = 0; i < length; i++){
         queue[i] = (Process*)malloc(sizeof(Process));
