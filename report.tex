@@ -1,0 +1,119 @@
+\documentclass[12pt,letterpaper]{article}
+
+% All the packages I used came with the default installation of texlive
+\usepackage{ifpdf}
+\usepackage[pdftex]{graphicx}
+\usepackage{mla}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{listings}
+\begin{document}
+\begin{mla}{Alexander Bean}{Apmann}{Ahmed Hadeen Hamed}{CSI-385}{\today}{Assignment 2}
+
+This project is an implementation of CSI-385 assignment two, which was about scheduling algorithms. The purpose of the assignment was to implement five different scheduling algorithms, First In First Out, Shortest Task First, Priority, Round Robin, and Round Robin with priority respectively and compare their performance. The project was completed in C and compiled with GCC.
+
+To represent processes in the program I created a struct named Process. The Process struct contained the necessary information needed for the algorithms to calculate their efficiency in scheduling the processes. The first component of the process struct is the pid. The pid is generated procedurally as the processes are generated and are used by the user to distinguish between the different processes so that they may gain useful information from the data the program outputs. The second attribute of the Process is the priority. This is a randomly generated number between one and three and is used to represent process importance. The third attribute of a Process is the burst time which is another randomly generated number this time from one to fifteen. The burst time represents the length of time the process needs to execute. The fourth attribute of a Process is the arrival time which is used to represent the time at which the process was presented to the scheduler. The next two attributes, start time and end time are used to display at what point during the running of the processes did each process start and end. The last three attributes are remaining time, stop time, and done. These attributes are used by the round robin algorithms which do not run the processes for the full length of the burst, instead they let each process run for a maximum amount of time, called a quantum then move to the next process. The scheduler does this until all of the processes have ran therefore each process needs to store The amount of time it has left before it finishes, the what time it stopped running last(for statistical purposes) and whether or not it has finished running.
+
+Another struct I created for the program is called runStats. runStats contains the average turn around time and the average wait time for a scheduler run. Each scheduling algorithm returns a runStats object at the end of it's run so that the main program can display how the run went along with the process start and end times.
+
+The first three algorithms(FIFO, STF, and Priority) I implemented were almost that exact same in their implementations with one key difference. Each algorithm sorts the processes based on one attribute of the processes and then runs the processes in the order they were sorted, marking start and end time and calculating average turnaround time and wait time along the way. The difference between the algorithms was the attribute they ordered the processes with. For FIFO the attribute was arrival time. For STF the attribute was burst time. For Priority the attribute was the priority. In the code this distinction meant changing one line, however the effect this change had on each algorithm's efficiency is notable.
+
+For the Round Robin algorithms the sorting aspect was the same as the other algorithms(I had the original round robin sort by arrival time and the one with priority sort by priority). What was different was how I calculated the run of the process. This is because for the round robin algorithms I had to take into account that each process might not run it's full length within the time quantum it is allotted. To Take this into consideration I had the run cycle loop keep going until every process was finished.
+
+The scheduling algorithms performed such that STF had the smallest turnaround and wait time, FIFO and Priority had the next largest and Round Robin and Round Robin with priority the largest average wait and turn around times. Even though this is true Round Robin is one of the most widely used scheduling algorithms(4). Also although it is efficient STF creates the opportunity for starvation of larger processes in the case that a large process can't reach the CPU because smaller processes keep taking up the queue(2).
+
+Example output:
+
+\begin{lstlisting}[frame=single]
+QUEUE
+PID =  1; PRIORITY = 1; BURSTTIME =  1; ARRIVALTIME = 2;
+PID =  2; PRIORITY = 3; BURSTTIME = 11; ARRIVALTIME = 4;
+PID =  3; PRIORITY = 3; BURSTTIME = 11; ARRIVALTIME = 4;
+PID =  4; PRIORITY = 1; BURSTTIME =  9; ARRIVALTIME = 1;
+PID =  5; PRIORITY = 1; BURSTTIME = 13; ARRIVALTIME = 2;
+PID =  6; PRIORITY = 2; BURSTTIME =  6; ARRIVALTIME = 2;
+PID =  7; PRIORITY = 3; BURSTTIME = 14; ARRIVALTIME = 2;
+PID =  8; PRIORITY = 1; BURSTTIME =  8; ARRIVALTIME = 1;
+PID =  9; PRIORITY = 3; BURSTTIME =  3; ARRIVALTIME = 5;
+PID = 10; PRIORITY = 3; BURSTTIME = 13; ARRIVALTIME = 4;
+FIFO
+PID =  4; START =   0; END =   9;
+PID =  8; START =   9; END =  17;
+PID =  1; START =  17; END =  18;
+PID =  5; START =  18; END =  31;
+PID =  6; START =  31; END =  37;
+PID =  7; START =  37; END =  51;
+PID =  2; START =  51; END =  62;
+PID =  3; START =  62; END =  73;
+PID = 10; START =  73; END =  86;
+PID =  9; START =  86; END =  89;
+Average Turn Around:47.299999; Average Wait:38.400002;
+STF
+PID =  1; START =   0; END =   1;
+PID =  9; START =   1; END =   4;
+PID =  6; START =   4; END =  10;
+PID =  8; START =  10; END =  18;
+PID =  4; START =  18; END =  27;
+PID =  2; START =  27; END =  38;
+PID =  3; START =  38; END =  49;
+PID =  5; START =  49; END =  62;
+PID = 10; START =  62; END =  75;
+PID =  7; START =  75; END =  89;
+Average Turn Around:37.299999; Average Wait:28.400000;
+PRI
+PID =  1; START =   0; END =   1;
+PID =  4; START =   1; END =  10;
+PID =  5; START =  10; END =  23;
+PID =  8; START =  23; END =  31;
+PID =  6; START =  31; END =  37;
+PID =  2; START =  37; END =  48;
+PID =  3; START =  48; END =  59;
+PID =  7; START =  59; END =  73;
+PID =  9; START =  73; END =  76;
+PID = 10; START =  76; END =  89;
+Average Turn Around:44.700001; Average Wait:35.799999;
+RR
+PID =  4; START =   0; END =  48;
+PID =  8; START =   5; END =  51;
+PID =  1; START =  10; END =  11;
+PID =  5; START =  11; END =  80;
+PID =  6; START =  16; END =  57;
+PID =  7; START =  21; END =  84;
+PID =  2; START =  26; END =  85;
+PID =  3; START =  31; END =  86;
+PID = 10; START =  36; END =  89;
+PID =  9; START =  41; END =  44;
+Average Turn Around:63.500000; Average Wait:54.599998;
+RR with priority
+PID =  1; START =   0; END =   1;
+PID =  4; START =   1; END =  48;
+PID =  5; START =   6; END =  80;
+PID =  8; START =  11; END =  56;
+PID =  6; START =  16; END =  57;
+PID =  2; START =  21; END =  81;
+PID =  3; START =  26; END =  82;
+PID =  7; START =  31; END =  86;
+PID =  9; START =  36; END =  39;
+PID = 10; START =  39; END =  89;
+Average Turn Around:61.900002; Average Wait:53.000000;
+\end{lstlisting}
+
+\begin{workscited}
+
+\bibent
+\href{http://www.massey.ac.nz/~mjjohnso/notes/59305/mod5.html}{"CPU SCHEDULING." 59.305 Course Notes. N.p., n.d. Web. 07 Mar. 2016.}
+
+\bibent
+\href{http://www.read.seas.harvard.edu/~kohler/class/05s-osp/notes/notes5.html}{"Scheduler." Harvard.edu. N.p., n.d. Web. 07 Mar. 2016.}
+
+\bibent
+\href{http://www.cplusplus.com/reference/cstdio/printf/}{"Printf." Cplusplus.com. N.p., n.d. Web. 7 Mar. 2016.}
+
+\bibent
+Tanenbaum, Andrew S., and Herbert Bos. Modern Operating Systems. Boston: Prentice Hall, 2014. Print.
+
+\end{workscited}
+
+\end{mla}
+\end{document}
