@@ -10,7 +10,7 @@ int generateProcesses(Process ** queue, int length){
 
         queue[i]->pid           = i + 1;
         queue[i]->priority      = rand() % 3  + 1;
-        queue[i]->burstTime     = rand() % 17 + 3;
+        queue[i]->burstTime     = rand() % 15 + 1;
         queue[i]->arrivalTime   = rand() % 5  + 1;
         queue[i]->startTime     = 0;
         queue[i]->endTime       = 0;

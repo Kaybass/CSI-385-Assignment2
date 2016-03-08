@@ -4,7 +4,7 @@
 #ifndef RR
 #define RR
 
-#define QUANTUM 10
+#define QUANTUM 5
 
 runStats * RRscheduler(Process ** queue, int length);
 
